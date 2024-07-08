@@ -46,21 +46,21 @@ function ShowMap({ navigation }) {
     const [vobjnearlist, setNearList] = useState([]);
     const [playernearlist, setPlayerNearList] = useState([]);
 
-    useFocusEffect(
+    useFocusEffect( /*useFocusEffect per caricare dati quando la mappa viene visualizzata. Carica gli oggetti e i giocatori vicini utilizzando funzioni asincrone.*/
         React.useCallback(() => {
             if (location != null && user.sid != null) {
 
-                //Async oggetti
+                //Async oggetti, Carica gli oggetti vicini
                 (async () => {
                     let data = await NearListRepo.loadNearList(user.sid, location.coords.latitude, location.coords.longitude);
                     setNearList(data);
                 })();
-                //Async player
+                //Async player, Carica i giocatori vicini
                 (async () => {
                     let data = await NearListRepo.loadPlayers(user.sid, location.coords.latitude, location.coords.longitude);
                     setPlayerNearList(data);
                 })();
-                //Async user
+                //Async user, Carica i dettagli dell'utente
                 if (user != null) {
                     (async () => {
                         let thisuser = await loadUserDetails(user);
@@ -89,6 +89,10 @@ function ShowMap({ navigation }) {
         }, [location, user])
     );
 
+
+/*La mappa (MapView) mostra i marker per la posizione dell'utente e per gli oggetti 
+e i giocatori vicini. I componenti Virtualobj e Player vengono utilizzati per creare 
+questi marker. */
     return (
         <SafeAreaView style={{ flex: 1, justifyContent: 'flex-end', marginTop: 40 }}>
             <MapView style={mapscreen.map} region={region} 
@@ -115,6 +119,7 @@ function ShowMap({ navigation }) {
                     if (distance > playableDistance) {
                         return null;
                     }
+                    // Passaggio esplicito dei `props` `object`, `sid`, e `distance`
                     return (
                         <MarkerElement.Virtualobj key={index} object={item} sid={user.sid} zIndex={999} />
                     );
@@ -127,6 +132,7 @@ function ShowMap({ navigation }) {
                     if (distance > playableDistance || item.positionshare == false) {
                         return null;
                     }
+                    // Passaggio esplicito dei `props` `player` e `sid`
                     return (
                         <MarkerElement.Player key={index} player={item} sid={user.sid} zIndex={150} />
                     );

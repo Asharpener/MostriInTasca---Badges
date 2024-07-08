@@ -89,10 +89,11 @@ export default class CommunicationController {
     }
 
     static async activateObject(sid, id) {
-        const endPoint = "objects/"+id+"/activate";	
+        const endPoint = "objects/"+id+"/activate2";	
         const verb = 'POST';
         const queryParams = {};
         const bodyParams = {sid: sid};
+        
         return await CommunicationController.genericRequest(endPoint, verb, queryParams, bodyParams);
     }
     

@@ -101,6 +101,35 @@ export async function loadPlayers(sid, lat, lon) {
     return response;
 }
 
+
+//esame gennaio badges
+export async function loadBadgeList() {
+    const storageManager = new StorageManager();
+    let objects = await storageManager.getAllBadges()
+        .catch((error) => {
+            console.log("No badge  objects found - " + error);
+        });
+    return objects || []; // Restituisci un array vuoto se non ci sono badge
+}
+
+export async function insertBadge(badgeId, badgeName, badgeDescription, badgeRarity, badgeImage) {
+    const storageManager = new StorageManager();
+    let row = await storageManager.insertBadge(badgeId, badgeName, badgeDescription, badgeRarity, badgeImage)
+        .catch((error) => {
+            console.log("No badge id found for " + badgeId + " - " + error);
+        });
+    if (row[0].error != null) {
+        console.log("NearListRepo - " + row[0].error);
+    } else {
+        console.log("NearListRepo - Badge inserted // " + row);
+        return response;
+    }
+    console.log("NearListRepo - Badge inserted // " + row);
+    return 1;
+
+}
+
+
 export async function loadPlayerDetails(sid, playerInfo) {
     // check if the object is already in the db
     const storageManager = new StorageManager();
@@ -149,23 +178,23 @@ export async function loadPlayerDetails(sid, playerInfo) {
             return user;
         }
     }
+}
 
-    /*esame giugno-star
-    export async function loadStarList() {
-    const storageManager = new StorageManager();
-    let objects = await storageManager.getActivatedStars()
-        .catch((error) => {
-            console.log("No star objects found - " + error);
-        });
-    return objects;
+/*esame giugno-star
+export async function loadStarList() {
+const storageManager = new StorageManager();
+let objects = await storageManager.getActivatedStars()
+    .catch((error) => {
+        console.log("No star objects found - " + error);
+    });
+return objects;
 }
 
 export async function toggleUsedStar(sid, id) {
-    const storageManager = new StorageManager();
-    let object = await storageManager.toggleStar(id)
-        .catch((error) => {
-            console.log("No object id found for " + id + " - " + error);
-        });
-    return 1;
+const storageManager = new StorageManager();
+let object = await storageManager.toggleStar(id)
+    .catch((error) => {
+        console.log("No object id found for " + id + " - " + error);
+    });
+return 1;
 }*/
-}

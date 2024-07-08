@@ -8,6 +8,7 @@ export default class StorageManager {
         // crea le tabelle se non esistono
         this.createTableUtenti();
         this.createTableOggetti();
+        this.createTableBadges();
     }
 
     //utenti
@@ -75,7 +76,7 @@ export default class StorageManager {
 
     // GETTERS
     async getAllObjects() {
-        const querySQL = "SELECT * FROM oggetti";
+        const querySQL = "SELECT * FROM badges";
         const query = { args: [], sql: querySQL };
         const result = await this.db.execAsync([query], false);
         //console.log(result[0].rows);
@@ -83,13 +84,45 @@ export default class StorageManager {
     }
 
     async getObjectByID(id) {
-        const querySQL = "SELECT * FROM oggetti WHERE id = ?";
+        const querySQL = "SELECT * FROM badges WHERE id = ?";
         const query = { args: [id], sql: querySQL };
         const result = await this.db.execAsync([query], false);
         //console.log("StorageManager // getUser - "+result[0].rows[0].uid);
         return result[0].rows;
     }
 
+
+    // ESAME GENNAIO BADGES
+    
+    async createTableBadges() {
+        const querySQL = "CREATE TABLE IF NOT EXISTS badges (id INTEGER PRIMARY KEY, name VARCHAR(100), description VARCHAR(100), rarity INTEGER, image TEXT)";
+        const query = { args: [], sql: querySQL }
+        const result = await this.db.execAsync([query], false)
+        return result;
+    }
+
+    async insertBadge(id, name, description, rarity, image) {
+        const querySQL = "INSERT INTO badges (id, name, description, rarity, image) VALUES (?, ?, ?, ?, ?)";
+        const query = { args: [id, name, description, rarity, image], sql: querySQL };
+        const result = await this.db.execAsync([query], false);
+        console.log(result);
+        return result;
+    }
+
+    async getBadgeById(id) {
+        const querySQL = "SELECT * FROM oggetti WHERE id = ?";
+        const query = { args: [id], sql: querySQL };
+        const result = await this.db.execAsync([query], false);
+        return result[0]?.rows || [];
+    }
+
+    async getAllBadges() {
+        const querySQL = "SELECT * FROM oggetti";
+        const query = { args: [], sql: querySQL };
+        const result = await this.db.execAsync([query], false);
+        return result[0]?.rows || [];
+    }
+    
     /* CODICE ESAME FEBBRAIO COLLECTED
     async createTableOggetti() {
         const querySQL = "CREATE TABLE IF NOT EXISTS oggetti (id INTEGER PRIMARY KEY, type VARCHAR(100), image TEXT, name VARCHAR(100), level INTEGER, collected BOOLEAN DEFAULT false)";

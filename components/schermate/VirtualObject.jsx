@@ -9,6 +9,7 @@ import { UserContext } from '../../models/UserContext';
 import * as NearListRepo from "../RepoAssist/NearListRepo.jsx";
 
 import CommunicationController from '../../CommunicationController.jsx';
+import StorageManager from '../../StorageManager.jsx';
 
 export default function VirtualObject({ route }) {
     const { user } = useContext(UserContext);
@@ -31,7 +32,7 @@ export default function VirtualObject({ route }) {
                     console.log("ciao" + user.sid, userData?.amulet)
                     if (userData && userData.amulet != null) {
                         let thisobj = await VObj.loadVObjDetails(user.sid, userData.amulet);
-                        setPlayableDistance(100+thisobj?.level)
+                        setPlayableDistance(100 + thisobj?.level)
                     } else {
                         setPlayableDistance(100)
                     }
@@ -95,6 +96,33 @@ function ObjectAction(props) {
                         } else {
                             alertMex = "Hai vinto!";
                             alertText = "Ora hai " + action.experience + " punti esperienza e " + action.life + " punti vita";
+
+                            if (action.badgeId != null) {
+                                console.log("Esame Badge, badgeId: " + action.badgeId + "e titolo: " + action.badgeName);
+
+                                //array di oggetti badge
+                                const badges = await NearListRepo.loadBadgeList();
+                                let isNewBadge = true;
+
+                                badges.forEach(element => {
+                                    if (element.id == action.badgeId) {
+                                        console.log("EsameGennaio. Badge doppione");
+                                        isNewBadge = false;
+                                    }
+                                });
+
+                                if (isNewBadge) {
+                                    console.log("EsameGennaio. Badge nuovo");
+                                    await NearListRepo.insertBadge(user.sid, action.badgeId, action.badgeName, action.badgeDescription, action.badgeRarity, action.badgeImage);
+                                }
+
+
+                            } else {
+                                console.log("Esame Badge, Questo mostro non rilascia badge");
+                            }
+
+
+                            // console.log("Esame Badge" + obj.badgeId); non funziona èerchè obj non ha badgeId, è action che ce l'ha
                         }
                     }
                     Alert.createAlert(alertMex, alertText, [{
@@ -103,6 +131,7 @@ function ObjectAction(props) {
                         }
                     }]);
                 })();
+
             };
             break;
         case "candy":
@@ -128,6 +157,7 @@ function ObjectAction(props) {
                 })();
             };
             break;
+
         /* esame giugno-star
         case "star":
                 text = "Raccogliendo questa stella otterrai " + obj.level + " punti esperienza.";
@@ -259,7 +289,7 @@ function ObjectAction(props) {
             </View>
         );
     } */
-        else {
+    else {
         return (
             <View>
                 <Text style={objscreen.objdesc}>{text}</Text>

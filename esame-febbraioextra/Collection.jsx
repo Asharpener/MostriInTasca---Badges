@@ -25,7 +25,7 @@ import CommunicationController from '../CommunicationController.jsx';
 
 export default function Collection() {
 
-    const { navigation } = useNavigation();
+    const { navigation } = useNavigation(); //se da errore togli le graffe
     const { location } = useContext(LocationContext);
     const { user } = useContext(UserContext);
     const [nearlist, setNL] = useState();
@@ -36,7 +36,7 @@ export default function Collection() {
             if (location != null) {
                 (async () => {
                     setLoading(true);
-                    let row = await CommunicationController.getCollection(user.sid).catch((error) => {
+                    let row = await CommunicationController.getCollection(user.sid).catch((error) => { //uso CommunicationController per ottenere la lista degli oggetti vicini e non tipo NearListRepo perchè non sto usando il db per stampare solo gli id
                         console.log("Collection - Error: " + error);
                         NewAlert.createAlert("Errore", "Impossibile caricare il gli oggetti vicini. Verifica la connessione o riprova più tardi.", [{ text: "OK", onPress: () => { navigation.navigate('Map') } }]);
                     });
@@ -54,7 +54,7 @@ export default function Collection() {
                     setLoading(false);
                 })();
             }
-        }, [user])
+        }, [user]) //forse è [user, location]
     );
 
     /*return (
